@@ -7,18 +7,22 @@ cats.forEach(
 
 var dogs = {
 	count : 1,
+	dogName : '',
 	bark : function() {
 		return 'guk';
 	},
 	dogCount : function() {
 		return this.count;
+	},
+	setName : function(name) {
+		this.dogName = name;
+	},
+	getName : function() {
+		return this.dogName;
 	}
 
 };
-var people = function(name) {
-	return this.name;
-};
+dogs.setName('doggy');
 console.log(dogs.bark());
 console.log(dogs.dogCount());
-var person = new people('john');
-console.log(person);
+console.log(dogs.getName());
