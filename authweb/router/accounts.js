@@ -50,7 +50,7 @@ router.get('/blogs/add', function(req, res) {
 	
 	res.render('accounts/blogs-add');
 });
-router.post('/blogs/add', isUserLogged, function(req, res) {
+router.post('/blogs/add', function(req, res) {
 	//res.json(req.body);
 	let newDoc = {
 		title : req.body.title,
