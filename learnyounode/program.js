@@ -126,20 +126,88 @@
 
 
 //10
-const net = require('net');
+// const net = require('net');
 
-net.createServer(function(socket) {
-	var myDate = new Date();
-	var month = myDate.getMonth();
-	if(month < 10) {
-		month = '0' + (month+1);
-	}
-	var date = myDate.getDate();
-	if(date < 10) {
-		date = '0' + date;
-	}
+// net.createServer(function(socket) {
+// 	var myDate = new Date();
+// 	var month = myDate.getMonth();
+// 	if(month < 10) {
+// 		month = '0' + (month+1);
+// 	}
+// 	var date = myDate.getDate();
+// 	if(date < 10) {
+// 		date = '0' + date;
+// 	}
 
-	socket.write(myDate.getFullYear() + '-' + month + '-' + date + ' ' + myDate.getHours() + ':' + myDate.getMinutes() + "\n");
-	socket.end();
+// 	socket.write(myDate.getFullYear() + '-' + month + '-' + date + ' ' + myDate.getHours() + ':' + myDate.getMinutes() + "\n");
+// 	socket.end();
+// })
+// .listen(process.argv[2]);
+
+//11
+// const http = require('http');
+// const fs = require('fs');
+
+// const server = http.createServer(function(req,res) {
+// 	fs.createReadStream(process.argv[3]).pipe(res);
+// });
+// server.listen(process.argv[2]);
+
+//12
+// const http = require('http');
+// const map = require('through2-map');
+
+// http.createServer(function(req, res) {
+// 	if(req.method == 'POST') {
+// 		var body = map(function(chunk) {
+// 			return chunk.toString().toUpperCase();
+// 		});
+// 		req.pipe(body).pipe(res);
+// 	}
+
+// }).listen(process.argv[2]);
+
+//13
+const http = require('http');
+const url = require('url');
+
+http.createServer(function(req, res) {
+	
+	var parsedUrl = url.parse(req.url, true);
+	//res.end(parsedUrl);
+
+	res.writeHead(200, {
+		'Content-Type' : 'application/json'
+	});
+
+	switch(parsedUrl.pathname) {
+		case '/api/parsetime':
+			var reqDate = new Date(parsedUrl.query.iso);
+			//var myDate = reqDate.toISOString();
+			var myJSONResp = {
+				'hour' : reqDate.getHours(),
+				'minute' : reqDate.getMinutes(),
+				'second' : reqDate.getSeconds()
+			}
+			res.end(JSON.stringify(myJSONResp));
+
+		break;
+
+		case '/api/unixtime':
+			//var reqDate = new Date(parsedUrl.query.iso);
+			var myJSONResp = {
+				'unixtime' : Date.parse(parsedUrl.query.iso)
+			}
+			res.end(JSON.stringify(myJSONResp));
+		break;
+
+		default:
+			res.end(JSON.stringify({'error' : 'route not defined'}));
+		break;
+	}
+	
+	
 })
-.listen(process.argv[2]);
+.listen(process.argv[2])
+
+
