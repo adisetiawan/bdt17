@@ -9,22 +9,6 @@ const blogsDB = new Datastore({ filename: './blogs-data', autoload: true });
 router.use(bodyParser.json()); // support json encoded bodies
 router.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-//check if user is logged in
-function isUserLogged(req, res, next) {
-	// if user is authenticated in the session, carry on 
-    if (req.isAuthenticated()) {
-        //req.session.isLogged = true;
-        req.app.locals.isLogged = true;
-        return next();
-    } else {
-    	//req.session.isLogged = false;
-    	req.app.locals.isLogged = false;
-    	// if they aren't redirect them to the home page
-    	res.redirect('/');
-    }
-    
-}
-
 // middleware that is specific to this router
 router.use(function timeLog (req, res, next) {
   //console.log('Time: ', Date.now())
