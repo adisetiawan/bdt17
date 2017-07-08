@@ -55,15 +55,6 @@ passport.deserializeUser(function(user, done) {
   done(null, user);
 });
 
-
-var hbs = exphbs.create({
-    // Specify helpers which are only registered on this instance.
-    helpers: {
-        logged: function () { return 'FOO!'; },
-        bar: function () { return 'BAR!'; }
-    }
-});
-
 //fb callback
 app.get('/auth/facebook', passport.authenticate('facebook'));
 app.get('/auth/facebook/callback',
