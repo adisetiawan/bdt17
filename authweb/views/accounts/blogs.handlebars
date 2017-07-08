@@ -1,0 +1,31 @@
+<div class="row">
+	<div class="col-md-3">
+		<ul style="margin-top:20px;" class="nav nav-pills nav-stacked">
+  			<li role="presentation" class="active"><a href="/accounts">Dashboard</a></li>
+			<li role="presentation"><a href="/accounts/blogs">My Blogs</a></li>
+			<li role="presentation"><a href="/accounts/blogs/add">New Blog</a></li>
+		</ul>
+	</div>
+  	<div class="col-md-9">
+  		<h1>My Blogs</h1>
+  		<table class="table">
+  			<tr>
+				<th>Title</th>
+				<th>Content</th>
+				<th>Action</th>
+			</tr>
+			{{#each blogs}}
+			<tr>
+				<td>{{this.title}}</td>
+				<td>{{this.content}}</td>
+				<td><a href="/accounts/blogs/edit/{{this._id}}">Edit</a> | <a href="/accounts/blogs/del/{{this._id}}">Delete</a> </td>
+			</tr>
+			{{/each}}
+		</table>
+  		{{#unless blogs}}
+		    <p class="empty">No content</p>
+		{{/unless}}
+		
+  	</div>
+</div>
+

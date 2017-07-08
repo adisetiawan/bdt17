@@ -5,6 +5,10 @@ const passport = require('passport');
 const FacebookStrategy = require('passport-facebook');
 const session = require('express-session');
 
+//import router
+const routerAPI = require('./router/api');
+const routerAccounts = require('./router/accounts')
+
 app.locals.webtitle = "My Website";
 
 app.use(function (err, req, res, next) {
@@ -60,22 +64,6 @@ var hbs = exphbs.create({
     }
 });
 
-//check if user is logged in
-function isUserLogged(req, res, next) {
-	// if user is authenticated in the session, carry on 
-    if (req.isAuthenticated()) {
-        req.session.isLogged = true;
-        req.app.locals.isLogged = true;
-        return next();
-    } else {
-    	req.session.isLogged = false;
-    	req.app.locals.isLogged = false;
-    	// if they aren't redirect them to the home page
-    	res.redirect('/');
-    }
-    
-}
-
 //fb callback
 app.get('/auth/facebook', passport.authenticate('facebook'));
 app.get('/auth/facebook/callback',
@@ -88,16 +76,17 @@ app.get('/', function(req, res) {
 });
 
 //protected route
-app.get('/accounts', isUserLogged, function(req, res) {
-	//console.log(req.session);
-	res.render('accounts', {name: req.user.displayName});
-});
+app.use('/api', routerAPI);
+app.use('/accounts', routerAccounts);
 
 //logout route
 app.get('/logout', function(req, res) {
 	req.session.destroy();
+	req.app.locals.isLogged = false;
 	req.logout();
 	res.redirect('/accounts');
 });
+
+
 
 app.listen(3003);
