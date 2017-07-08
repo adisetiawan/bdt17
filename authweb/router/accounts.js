@@ -27,18 +27,28 @@ function isUserLogged(req, res, next) {
 
 // middleware that is specific to this router
 router.use(function timeLog (req, res, next) {
-  console.log('Time: ', Date.now())
-  next()
+  //console.log('Time: ', Date.now())
+  //next()
+  if (req.isAuthenticated()) {
+        //req.session.isLogged = true;
+        req.app.locals.isLogged = true;
+        return next();
+    } else {
+    	//req.session.isLogged = false;
+    	req.app.locals.isLogged = false;
+    	// if they aren't redirect them to the home page
+    	res.redirect('/');
+    }
 });
 
 //user dashboard
-router.get('/', isUserLogged, function(req, res) {
+router.get('/', function(req, res) {
 	//console.log(req.session);
 	res.render('accounts/dashboard', {name: req.user.displayName});
 });
 
 //blogs list
-router.get('/blogs', isUserLogged, function(req, res) {
+router.get('/blogs', function(req, res) {
 	//find blog post
 	blogsDB.find({ }, function (err, docs) {
 		if(err) {
@@ -52,7 +62,7 @@ router.get('/blogs', isUserLogged, function(req, res) {
 });
 
 //add new blog
-router.get('/blogs/add', isUserLogged, function(req, res) {
+router.get('/blogs/add', function(req, res) {
 	
 	res.render('accounts/blogs-add');
 });
@@ -72,7 +82,7 @@ router.post('/blogs/add', isUserLogged, function(req, res) {
 });
 
 //update blog
-router.get('/blogs/edit/:id', isUserLogged, function(req, res) {
+router.get('/blogs/edit/:id', function(req, res) {
 	blogsDB.findOne({ _id: req.params.id }, function (err, doc) {
 		if(err) {
   			console.error(err.stack);
@@ -86,7 +96,7 @@ router.get('/blogs/edit/:id', isUserLogged, function(req, res) {
 
 
 });
-router.post('/blogs/edit', isUserLogged, function(req, res) {
+router.post('/blogs/edit', function(req, res) {
 	//res.json(req.body);
 	let updateDoc = {
 		title : req.body.title,
@@ -100,7 +110,7 @@ router.post('/blogs/edit', isUserLogged, function(req, res) {
   		res.redirect('/accounts/blogs');
 	});
 });
-router.get('/blogs/del/:id', isUserLogged, function(req, res) {
+router.get('/blogs/del/:id', function(req, res) {
 	//res.json(req.body);
 	
 	blogsDB.remove({ _id: req.params.id}, {}, function (err, numRemoved) { 
